@@ -572,6 +572,13 @@ fn main() {
         }
     };
 
+    // Al abrir clipper.exe a mano se abre la ventana (si no, solo se vería un icono en la bandeja y parecería que no
+    // pasa nada). El inicio con Windows lo arranca con --background: ahí empieza a grabar sin abrir nada.
+    if !has(webui::BACKGROUND_ARG) {
+        open_ui(&mut last_open);
+    }
+    thread::spawn(webui::migrate_autostart); // inicio con Windows ya activado por una versión anterior
+
     'main: loop {
         unsafe {
             let mut msg = MSG::default();

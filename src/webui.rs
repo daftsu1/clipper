@@ -836,13 +836,38 @@ fn write_config(dir: &Path, c: &Config) -> Result<(), String> {
 const RUN_KEY: &str = r"HKCU\Software\Microsoft\Windows\CurrentVersion\Run";
 const RUN_NAME: &str = "Clipper";
 
+/// Argumento con el que Windows inicia Clipper al abrir sesión: arranca sin abrir la ventana.
+/// (Al abrirlo a mano, sin este argumento, sí se abre la ventana.)
+pub const BACKGROUND_ARG: &str = "--background";
+
+/// Valor actual de la clave Run de Clipper (en minúsculas), si existe.
+fn autostart_value() -> Option<String> {
+    match silent_cmd(Path::new("reg.exe")).args(["query", RUN_KEY, "/v", RUN_NAME]).stdin(Stdio::null()).output() {
+        Ok(o) if o.status.success() => Some(String::from_utf8_lossy(&o.stdout).to_lowercase()),
+        _ => None,
+    }
+}
+
 /// ¿Está este ejecutable registrado para iniciar con Windows (clave Run del usuario)?
 pub fn autostart_enabled() -> bool {
     let exe = std::env::current_exe().unwrap_or_default().to_string_lossy().to_lowercase();
-    match silent_cmd(Path::new("reg.exe")).args(["query", RUN_KEY, "/v", RUN_NAME]).stdin(Stdio::null()).output() {
-        Ok(o) if o.status.success() => String::from_utf8_lossy(&o.stdout).to_lowercase().contains(&exe),
-        _ => false,
+    autostart_value().map(|v| v.contains(&exe)).unwrap_or(false)
+}
+
+/// Si el inicio con Windows ya estaba activado con una versión anterior (sin `--background`), lo actualiza para que
+/// el arranque automático no abra la ventana. No activa nada que el usuario no tuviera activado.
+pub fn migrate_autostart() {
+    let exe = std::env::current_exe().unwrap_or_default().to_string_lossy().to_lowercase();
+    if let Some(v) = autostart_value() {
+        if needs_background_arg(&v, &exe) {
+            let _ = set_autostart(true);
+        }
     }
+}
+
+/// ¿El valor de la clave Run es de este ejecutable pero todavía no lleva `--background`? (ambos en minúsculas)
+fn needs_background_arg(run_value: &str, exe_lower: &str) -> bool {
+    run_value.contains(exe_lower) && !run_value.contains(BACKGROUND_ARG)
 }
 
 /// Activa o quita el inicio con Windows. Solo toca el valor «Clipper» de la clave Run del usuario actual.
@@ -850,7 +875,7 @@ fn set_autostart(on: bool) -> Result<(), String> {
     let exe = std::env::current_exe().map_err(|e| e.to_string())?;
     let mut c = silent_cmd(Path::new("reg.exe"));
     if on {
-        c.args(["add", RUN_KEY, "/v", RUN_NAME, "/t", "REG_SZ", "/d"]).arg(format!("\"{}\"", exe.display())).arg("/f");
+        c.args(["add", RUN_KEY, "/v", RUN_NAME, "/t", "REG_SZ", "/d"]).arg(format!("\"{}\" {BACKGROUND_ARG}", exe.display())).arg("/f");
     } else {
         c.args(["delete", RUN_KEY, "/v", RUN_NAME, "/f"]);
     }
@@ -1142,6 +1167,9 @@ pub fn open_window(ui: &Ui, view: Option<&str>) {
 /// Abre una dirección de la interfaz en una ventana de aplicación (Chrome/Edge) o, si no hay, en el navegador por defecto.
 pub fn open_url(dir: &Path, url: &str) {
     log(&dir.join("clipper.log"), "interfaz: abriendo la ventana");
+    if std::env::var_os("CLIPPER_NO_BROWSER").is_some() {
+        return; // ayuda para las pruebas automáticas: no abre ninguna ventana
+    }
     if let Some(exe) = browser_path() {
         let profile = dir.join("ui_profile");
         let _ = Command::new(exe)
@@ -1160,6 +1188,18 @@ mod tests {
 
     fn base() -> Config {
         Config::default()
+    }
+
+    #[test]
+    fn migracion_del_inicio_con_windows() {
+        let exe = r"d:\clipper\clipper.exe";
+        // valor de una versión anterior (sin argumento): hay que actualizarlo
+        assert!(needs_background_arg("    clipper    reg_sz    \"d:\\clipper\\clipper.exe\"\r\n", exe));
+        // ya migrado: no se toca
+        assert!(!needs_background_arg("    clipper    reg_sz    \"d:\\clipper\\clipper.exe\" --background\r\n", exe));
+        // el valor es de otra copia de Clipper: no es asunto de este ejecutable
+        assert!(!needs_background_arg("    clipper    reg_sz    \"e:\\otra\\clipper.exe\"\r\n", exe));
+        assert_eq!(BACKGROUND_ARG, "--background");
     }
 
     #[test]

@@ -164,6 +164,21 @@ button.danger-fill:hover{filter:brightness(1.08);background:var(--err)}
 <!-- INICIO -->
 <section class="view" id="v-inicio">
   <div class="head"><h1>Inicio</h1><span class="sub right" id="okline"></span></div>
+  <section class="card" id="welcome" hidden>
+    <div class="row" style="justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap">
+      <div style="flex:1;min-width:260px">
+        <b style="font-size:16px">Bienvenido a Clipper</b>
+        <p class="muted" style="margin:6px 0 10px">Clipper graba en segundo plano: no hace falta dejar esta ventana abierta. Puedes cerrarla y el programa sigue funcionando desde la bandeja del sistema, junto al reloj (en Windows 11 puede quedar bajo la flecha ^).</p>
+        <ol style="margin:0 0 10px;padding-left:20px;display:flex;flex-direction:column;gap:6px">
+          <li>Cuando pase algo que quieras conservar, pulsa <span class="kbd" id="w-hk"></span>: se guardan los últimos <b id="w-buf"></b> s.</li>
+          <li>Tus clips aparecen en <b>Clips</b>, donde puedes recortarlos, ajustar el audio de cada pista o prepararlos para Discord.</li>
+          <li>El micrófono está desactivado; actívalo en <b>Configuración → Pistas separadas</b> si lo quieres.</li>
+        </ol>
+        <div class="hint">Los clips se guardan en <span class="mono" id="w-dir"></span>. Para cerrar el programa del todo: clic derecho en el icono de la bandeja → Salir.</div>
+      </div>
+      <button class="primary" id="w-ok">Entendido</button>
+    </div>
+  </section>
   <div class="card status">
     <div class="l">
       <span class="cap">Estado</span>
@@ -347,9 +362,19 @@ button.danger-fill:hover{filter:brightness(1.08);background:var(--err)}
   function thumbBlock(c, small) {
     return `<div class="thumb"><img src="/thumb/${encodeURIComponent(c.name)}?t=${T}" alt="" loading="lazy" onerror="this.remove()"><svg width="${small ? 28 : 34}" height="${small ? 28 : 34}" viewBox="0 0 24 24" fill="#fff" fill-opacity=".85" aria-hidden="true" style="position:relative"><path d="M8 5v14l11-7z"/></svg><span class="badge">${fmtd(c.duration)}</span></div>`;
   }
+  // Bienvenida: se muestra en Inicio hasta que se pulsa «Entendido» (se recuerda en este perfil de la ventana).
+  const WELCOME_KEY = 'clipper.bienvenida';
+  function welcomed() { try { return localStorage.getItem(WELCOME_KEY) === '1'; } catch (e) { return false; } }
+  function showWelcome(s) {
+    if (welcomed()) { $('welcome').hidden = true; return; }
+    $('w-hk').textContent = s.hotkey; $('w-buf').textContent = s.buffer_target; $('w-dir').textContent = s.dir;
+    $('welcome').hidden = false;
+  }
+  $('w-ok').onclick = () => { try { localStorage.setItem(WELCOME_KEY, '1'); } catch (e) {} $('welcome').hidden = true; };
   async function refresh() {
     let s; try { s = await api('/api/status'); } catch (e) { return; }
     st = s;
+    showWelcome(s);
     const i = stateInfo(s);
     $('sdot').className = 'dot ' + i.cls; $('stitle').textContent = i.t;
     $('ssub').textContent = s.state === 'recording' ? 'Búfer ' + s.buffer_target + ' s' : 'Ver actividad en Inicio';

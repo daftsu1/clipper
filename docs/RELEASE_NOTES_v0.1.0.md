@@ -4,7 +4,7 @@ Primera versión pública de Clipper: un grabador de clips **ligero** para Windo
 
 ## Cómo probarlo
 1. Descarga `Clipper-0.1.0-win64.zip` y extráelo en una carpeta tuya (por ejemplo `Documentos\Clipper`).
-2. Abre `clipper.exe`: aparece en la bandeja y graba. **Ctrl + Alt + F9** guarda los últimos 60 s. Clic izquierdo en el icono abre la ventana.
+2. Abre `clipper.exe`: se abre la ventana con una bienvenida y queda un icono en la bandeja; ya está grabando. **Ctrl + Alt + F9** guarda los últimos 60 s. Puedes cerrar la ventana, sigue grabando.
 3. Compara el `SHA-256` del zip con el publicado abajo.
 
 > `clipper.exe` no está firmado: SmartScreen o tu antivirus pueden avisar. El código está en el repositorio. Tampoco se ha probado con juegos con anticheat.
@@ -23,7 +23,7 @@ Primera versión pública de Clipper: un grabador de clips **ligero** para Windo
 - Inicio con Windows opcional (con instrucciones para quitarlo) y borrado a la Papelera.
 
 ## Contenido del zip
-`clipper.exe`, `bin\ffmpeg.exe` (compilación de Gyan, **GPL v3**; licencia y enlace al código en `ffmpeg-licencia\`), `LICENSE` (MIT del programa), `THIRD_PARTY_NOTICES.md` y `LEEME.md`.
+`clipper.exe`, `bin\ffmpeg.exe` (compilación de Gyan, **GPL v3**; licencia y enlace al código en `ffmpeg-licencia\`), `LICENSE` (MIT del programa), `THIRD_PARTY_NOTICES.md`, `LEEME.txt` (inicio rápido) y `LEEME.md` (manual completo).
 
 ## Problemas conocidos
 - Los juegos en ventana no se detectan como pista «Juego» (añádelos como aplicación).

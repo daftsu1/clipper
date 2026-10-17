@@ -1,0 +1,81 @@
+CLIPPER 0.1.0 (beta) - LEEME PRIMERO
+=====================================
+
+Clipper graba tu pantalla y tu audio en segundo plano. Cuando pasa algo que
+quieres conservar, pulsas un atajo y guarda los ultimos segundos como un video MP4.
+
+
+EMPEZAR (1 minuto)
+------------------
+1. Extrae TODO el zip en una carpeta tuya, por ejemplo Documentos\Clipper.
+   - No lo ejecutes desde dentro del zip.
+   - No lo pongas en Program Files: Clipper guarda aqui mismo sus clips y su
+     configuracion y necesita poder escribir en la carpeta.
+2. Abre clipper.exe (doble clic). Se abre su ventana y queda un icono en la bandeja
+   del sistema, junto al reloj (en Windows 11 puede estar bajo la flecha ^).
+3. Juega o haz lo que quieras. Para guardar los ultimos 60 segundos pulsa:
+
+        Ctrl + Alt + F9
+
+4. Mira, recorta o comprime el clip en la ventana (pestana "Clips").
+
+Puedes cerrar la ventana: el programa sigue grabando. Para cerrarlo del todo:
+clic derecho en el icono de la bandeja -> Salir.
+
+
+AVISO DE WINDOWS (es normal)
+----------------------------
+clipper.exe NO esta firmado digitalmente (la firma cuesta dinero), asi que Windows
+puede mostrar "Windows protegio su PC": pulsa "Mas informacion" y luego
+"Ejecutar de todas formas". Algun antivirus podria marcarlo por error.
+El codigo fuente es publico y puedes revisarlo o compilarlo tu mismo.
+Tampoco se ha probado con juegos con anticheat (Vanguard, EAC, BattlEye).
+
+
+QUE NECESITAS
+-------------
+- Windows 11 (recomendado) o Windows 10.
+- GPU NVIDIA: funciona a fondo (probado).
+- GPU AMD: EXPERIMENTAL, nunca se ha probado en una AMD real. Si tienes una,
+  tu ayuda vale mucho: mira la seccion "Prueba con AMD" de LEEME.md.
+- Otra GPU (Intel...): funciona usando el procesador (mas consumo).
+- Chrome o Edge para la ventana (Edge viene con Windows).
+No hace falta instalar nada mas: el zip ya incluye ffmpeg.
+
+
+QUE HAY EN ESTA CARPETA
+-----------------------
+clipper.exe            El programa.
+bin\ffmpeg.exe         ffmpeg (de terceros, licencia GPL v3). Lo usa Clipper para grabar.
+LEEME.md               Manual completo (configuracion, pistas de audio, problemas...).
+LICENSE                Licencia MIT de Clipper.
+THIRD_PARTY_NOTICES.md Avisos de componentes de terceros.
+ffmpeg-licencia\       Licencia GPL v3 de ffmpeg y enlace a su codigo fuente.
+
+Al usarlo se crean junto al programa: clips\ (tus videos), config.json (ajustes),
+clipper.log (registro) y otras carpetas temporales.
+
+
+SI ALGO FALLA
+-------------
+Abre clipper.log (esta junto a clipper.exe): ahi queda anotado cada evento y cada error.
+Si no se guarda el clip, mira la ultima parte de ese archivo. El manual completo
+(LEEME.md) tiene una seccion de solucion de problemas.
+
+
+INICIO CON WINDOWS (opcional, desactivado por defecto)
+------------------------------------------------------
+Ventana -> Configuracion -> Sistema -> "Iniciar con Windows".
+Para quitarlo: desmarca esa casilla, o en una terminal:
+reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v Clipper /f
+
+
+ACTUALIZAR O DESINSTALAR
+------------------------
+- Actualizar: cierra Clipper (bandeja -> Salir), reemplaza clipper.exe (y bin\ffmpeg.exe si
+  lo indican las notas) y vuelve a abrirlo. Tus clips y ajustes se conservan.
+- Desinstalar: quita el inicio con Windows (arriba), cierra Clipper y borra la carpeta.
+  No instala nada fuera de ella.
+
+
+No hay cuentas, nube ni telemetria: todo es local.

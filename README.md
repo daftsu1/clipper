@@ -36,7 +36,8 @@ Con el ajuste por defecto (`Automático`) Clipper mira tu GPU y elige. Si el cod
 ## Descarga e instalación
 
 1. Descarga el zip del último [release](../../releases) y **extráelo en una carpeta tuya** (por ejemplo `Documentos\Clipper`). No hace falta instalar nada ni ser administrador.
-2. Abre `clipper.exe`. Aparece un icono en la bandeja y empieza a grabar. Clic izquierdo en el icono abre la ventana.
+2. Abre `clipper.exe` (doble clic): se abre su ventana con una breve bienvenida y queda un icono en la bandeja del sistema, junto al reloj (en Windows 11 puede estar bajo la flecha ^). Empieza a grabar al instante.
+   Puedes cerrar la ventana: sigue grabando. Clic izquierdo en el icono de la bandeja la vuelve a abrir.
 3. El zip ya incluye `ffmpeg` (en `bin\`). Si prefieres el tuyo, quita esa carpeta y ten `ffmpeg` en el `PATH`.
 
 > **Aviso de Windows:** `clipper.exe` **no está firmado** (la firma de código cuesta dinero), así que SmartScreen puede mostrar «Windows protegió su PC» (*Más información → Ejecutar de todas formas*) y
@@ -77,7 +78,8 @@ Cada pista extra suma unos 160 kbps al archivo.
 ## Iniciar con Windows
 
 Opcional y **desactivado por defecto**: *Configuración → Sistema → Iniciar con Windows*. Crea un único valor en el registro de *tu usuario*
-(`HKCU\Software\Microsoft\Windows\CurrentVersion\Run`, valor `Clipper`), sin administrador y sin tocar nada del sistema.
+(`HKCU\Software\Microsoft\Windows\CurrentVersion\Run`, valor `Clipper` = `"<ruta>\clipper.exe" --background`), sin administrador y sin tocar nada del sistema.
+Con `--background` Clipper empieza a grabar al iniciar sesión **sin abrir la ventana**; al abrirlo tú a mano, la ventana sí se abre.
 
 **Para quitarlo** (basta una):
 
