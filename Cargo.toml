@@ -1,0 +1,33 @@
+[package]
+name = "clipper"
+version = "0.1.0"
+edition = "2021"
+description = "Grabador de clips ligero para Windows: búfer circular con ffmpeg, audio por aplicación, bandeja del sistema, atajo global y editor"
+license = "MIT"
+readme = "README.md"
+
+[dependencies]
+chrono = { version = "0.4", default-features = false, features = ["clock"] }
+wasapi = "0.26"
+global-hotkey = "0.6"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tray-icon = "0.19"
+windows = { version = "0.58", features = [
+    "Win32_Foundation",
+    "Win32_Security",
+    "Win32_System_Threading",
+    "Win32_System_JobObjects",
+    "Win32_System_ProcessStatus",
+    "Win32_System_Diagnostics_ToolHelp",
+    "Win32_Graphics_Gdi",
+    "Win32_UI_WindowsAndMessaging",
+    "Win32_System_Diagnostics_Debug",
+] }
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

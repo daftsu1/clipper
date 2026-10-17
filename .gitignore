@@ -1,0 +1,20 @@
+# compilación
+/target
+/target_release
+
+# datos de usuario y archivos de ejecución (nunca deben subirse)
+config.json
+config.backup.json
+clipper.log
+ui_live.txt
+ui_url.txt
+clips/
+buffer_rs/
+thumbs/
+ui_profile/
+
+# binarios y paquetes de release (van como adjuntos del release, no en el repositorio)
+bin/
+*.exe
+/release/
+*.zip
